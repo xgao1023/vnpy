@@ -149,7 +149,7 @@ class TimescaleDBManager(BaseDatabaseManager):
                    bar.open_price, bar.high_price, bar.low_price, bar.close_price, bar.volume, bar.open_interest]
                   for bar in data]
 
-        query = f"insert into hist_md.bardata ({','.join(columns)}) values %s;"
+        query = f"insert into hist_md.bardata ({','.join(columns)}) values %s on conflict do nothing;"
         with self.__conn.cursor() as cur:
             psycopg2.extras.execute_values(cur, query, values)
             self.__conn.commit()
@@ -173,7 +173,7 @@ class TimescaleDBManager(BaseDatabaseManager):
                   for tick in data]
 
 
-        query = f"insert into hist_md.tickdata ({','.join(columns)}) values %s;"
+        query = f"insert into hist_md.tickdata ({','.join(columns)}) values %s  on conflict do nothing;"
         with self.__conn.cursor() as cur:
             psycopg2.extras.execute_values(cur, query, values)
             self.__conn.commit()
